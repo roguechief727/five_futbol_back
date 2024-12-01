@@ -12,6 +12,10 @@ const historialRoutes = require('./api/historial/route');
 const administradorRoutes = require('./api/administrador/route');
 const calificacionRoutes = require('./api/calificacion/route');
 const notificacionRoutes = require('./api/notificacion/route');
+const userRoutes = require('./api/users/route');
+
+const authRoutes = require('./api/routes/auth'); // Importa las rutas de autenticación
+const middlewares = require('./api/middlewares/verifyToken'); // Importa los middlewares de autenticación
 const PORT = 3001;
 
 app.use(express.json());
@@ -27,6 +31,11 @@ app.use('/api', historialRoutes);
 app.use('/api', administradorRoutes);
 app.use('/api', calificacionRoutes);
 app.use('/api', notificacionRoutes);
+app.use('/api', userRoutes);
+
+app.use(express.json());
+app.use('/api', middlewares.verifyToken('administrador'), userRoutes); // Usa las rutas de usuario protegidas
+app.use('/api/routes/auth', authRoutes);  
 
 
 app.get('/', (req, res) => {
