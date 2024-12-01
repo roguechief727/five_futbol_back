@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { connection } = require('../../libs/mysql');
 const jwt = require('jsonwebtoken');
+const { verifyToken } = require('../middlewares/verifyToken');
 
 const JWT_SECRET = 'supersecretkey'; // Usa una clave secreta más segura en producción
 

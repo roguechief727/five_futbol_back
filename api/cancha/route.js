@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { connection } = require('../../libs/mysql');
+const { verifyToken } = require('../middlewares/verifyToken');
 
 // GET: Obtener todas las canchas
 router.get('/cancha', async (req, res) => {

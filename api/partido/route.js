@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { connection } = require('../../libs/mysql'); // Asegúrate de que la ruta sea correcta
+const { verifyToken } = require('../middlewares/verifyToken');
 
 // GET: Obtener todos los partidos
 router.get('/partido', verifyToken(), async (req, res) => {

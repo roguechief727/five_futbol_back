@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { connection } = require('../../libs/mysql');
+const { verifyToken } = require('../middlewares/verifyToken');
 
 // GET: Obtener todos los equipos
 router.get('/equipo', async (req, res) => {
