@@ -3,7 +3,7 @@ const router = express.Router();
 const { connection } = require('../../libs/mysql');
 
 // GET: Obtener todas las penalizaciones
-router.get('/penalizacion', async (req, res) => {
+router.get('/penalizacion', verifyToken(), async (req, res) => {
   try {
     const [rows] = await connection.query('SELECT * FROM penalizacion');
     res.json(rows);
@@ -14,7 +14,7 @@ router.get('/penalizacion', async (req, res) => {
 });
 
 // POST: Crear una nueva penalización
-router.post('/penalizacion', async (req, res) => {
+router.post('/penalizacion', verifyToken('administrador'), async (req, res) => {
   try {
     const { idPenalizacion, categoria, descripcion, estado, fechaPenalizacion, idJugador, gravedad } = req.body;
     if (!idPenalizacion || !categoria) {
@@ -34,7 +34,7 @@ router.post('/penalizacion', async (req, res) => {
 });
 
 // DELETE: Eliminar una penalización
-router.delete('/penalizacion', async (req, res) => {
+router.delete('/penalizacion', verifyToken('administrador'), async (req, res) => {
   try {
     const { idPenalizacion } = req.query;
     if (!idPenalizacion) {

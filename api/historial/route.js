@@ -14,7 +14,7 @@ router.get('/historial', async (req, res) => {
 });
 
 // POST: Crear un nuevo registro en el historial
-router.post('/historial', async (req, res) => {
+router.post('/historial', verifyToken('administrador'), async (req, res) => {
   try {
     const { idHistorial, idJugador, idPartido } = req.body;
     if (!idHistorial) {
@@ -30,7 +30,7 @@ router.post('/historial', async (req, res) => {
 });
 
 // DELETE: Eliminar un registro del historial
-router.delete('/historial', async (req, res) => {
+router.delete('/historial', verifyToken('administrador'), async (req, res) => {
   try {
     const { idHistorial } = req.query;
     if (!idHistorial) {

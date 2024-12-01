@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const { connection } = require('../../libs/mysql');
+const { verifyToken } = require('../middlewares/verifyToken');
 
 // GET: Obtener todos los administradores
-router.get('/administrador', async (req, res) => {
+router.get('/administrador', verifyToken('adminstrador'), async (req, res) => {
   try {
     const [rows] = await connection.query('SELECT * FROM administrador');
     res.json(rows);
@@ -14,7 +15,7 @@ router.get('/administrador', async (req, res) => {
 });
 
 // POST: Crear un nuevo administrador
-router.post('/administrador', async (req, res) => {
+router.post('/administrador', verifyToken('administrador'), async (req, res) => {
   try {
     const { idAdmin, nombre } = req.body;
     if (!idAdmin || !nombre) {
@@ -30,7 +31,7 @@ router.post('/administrador', async (req, res) => {
 });
 
 // DELETE: Eliminar un administrador
-router.delete('/administrador', async (req, res) => {
+router.delete('/administrador', verifyToken('administrador'), async (req, res) => {
   try {
     const { idAdmin } = req.query;
     if (!idAdmin) {

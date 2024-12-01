@@ -3,7 +3,7 @@ const router = express.Router();
 const { connection } = require('../../libs/mysql'); // Asegúrate de que la ruta sea correcta
 
 // GET: Obtener todos los partidos
-router.get('/partido', async (req, res) => {
+router.get('/partido', verifyToken(), async (req, res) => {
   try {
     const [rows] = await connection.query('SELECT * FROM partido');
     res.json(rows);
@@ -14,7 +14,7 @@ router.get('/partido', async (req, res) => {
 });
 
 // POST: Crear un nuevo partido
-router.post('/partido', async (req, res) => {
+router.post('/partido', verifyToken(), async (req, res) => {
   try {
     const { idPartido, estado, fecha, idCancha, idAdmin } = req.body;
 
@@ -37,7 +37,7 @@ router.post('/partido', async (req, res) => {
 });
 
 // GET: Obtener un partido por ID
-router.get('/partido/:id', async (req, res) => {
+router.get('/partido/:id', verifyToken(), async (req, res) => {
   try {
     const { id } = req.params;
     const [result] = await connection.query('SELECT * FROM partido WHERE idPartido = ?', [id]);
@@ -49,7 +49,7 @@ router.get('/partido/:id', async (req, res) => {
 });
 
 // PUT: Actualizar un partido
-router.put('/partido', async (req, res) => {
+router.put('/partido', verifyToken('administrador'), async (req, res) => {
   try {
     const { idPartido, estado, fecha, idCancha, idAdmin } = req.body;
 
@@ -73,7 +73,7 @@ router.put('/partido', async (req, res) => {
 });
 
 // DELETE: Eliminar un partido por ID
-router.delete('/partido', async (req, res) => {
+router.delete('/partido', verifyToken('administrador'), async (req, res) => {
   try {
     const { idPartido } = req.query;
 

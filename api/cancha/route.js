@@ -14,7 +14,7 @@ router.get('/cancha', async (req, res) => {
 });
 
 // POST: Crear una nueva cancha
-router.post('/cancha', async (req, res) => {
+router.post('/cancha', verifyToken('administrador'), async (req, res) => {
   try {
     const { idCancha, ubicacion, disponible } = req.body;
     if (!idCancha || !ubicacion) {
@@ -30,7 +30,7 @@ router.post('/cancha', async (req, res) => {
 });
 
 // DELETE: Eliminar una cancha
-router.delete('/cancha', async (req, res) => {
+router.delete('/cancha', verifyToken('administrador'), async (req, res) => {
   try {
     const { idCancha } = req.query;
     if (!idCancha) {

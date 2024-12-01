@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const { connection } = require('../../libs/mysql'); // Corrige según la ubicación relativa
+const { verifyToken } = require('../middlewares/verifyToken');
 
 // GET: Obtener todos los jugadores
-router.get('/jugador', async (req, res) => {
+router.get('/jugador', verifyToken(), async (req, res) => {
   try {
     const [rows] = await connection.query('SELECT * FROM jugador');
     res.json(rows);
@@ -14,7 +15,7 @@ router.get('/jugador', async (req, res) => {
 });
 
 // POST: Crear un nuevo jugador
-router.post('/jugador', async (req, res) => {
+router.post('/jugador', verifyToken('administrador'), async (req, res) => {
   try {
     const { idJugador, nombre, email, modo, rendimiento, golesMarcados, fallasCometidas } = req.body;
 
@@ -37,7 +38,7 @@ router.post('/jugador', async (req, res) => {
 });
 
 // GET: Obtener un jugador por ID
-router.get('/jugador/:id', async (req, res) => {
+router.get('/jugador/:id', verifyToken(), async (req, res) => {
   try {
     const { id } = req.params;
     const [result] = await connection.query('SELECT * FROM jugador WHERE idJugador = ?', [id]);
@@ -49,7 +50,7 @@ router.get('/jugador/:id', async (req, res) => {
 });
 
 // PUT: Actualizar un jugador
-router.put('/jugador', async (req, res) => {
+router.put('/jugador', verifyToken('administrador'), async (req, res) => {
   try {
     const { idJugador, nombre, email, modo, rendimiento, golesMarcados, fallasCometidas } = req.body;
 
@@ -73,7 +74,7 @@ router.put('/jugador', async (req, res) => {
 });
 
 // DELETE: Eliminar un jugador por ID
-router.delete('/jugador', async (req, res) => {
+router.delete('/jugador', verifyToken('administrador'), async (req, res) => {
   try {
     const { idJugador } = req.query;
 

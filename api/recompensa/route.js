@@ -3,7 +3,7 @@ const router = express.Router();
 const { connection } = require('../../libs/mysql');
 
 // GET: Obtener todas las recompensas
-router.get('/recompensa', async (req, res) => {
+router.get('/recompensa', verifyToken(), async (req, res) => {
   try {
     const [rows] = await connection.query('SELECT * FROM recompensa');
     res.json(rows);
@@ -14,7 +14,7 @@ router.get('/recompensa', async (req, res) => {
 });
 
 // POST: Crear una nueva recompensa
-router.post('/recompensa', async (req, res) => {
+router.post('/recompensa', verifyToken('administrador'), async (req, res) => {
   try {
     const { idRecompensa, descripcion, fechaRecompensa } = req.body;
     if (!idRecompensa) {
@@ -30,7 +30,7 @@ router.post('/recompensa', async (req, res) => {
 });
 
 // DELETE: Eliminar una recompensa
-router.delete('/recompensa', async (req, res) => {
+router.delete('/recompensa', verifyToken('administrador'), async (req, res) => {
   try {
     const { idRecompensa } = req.query;
     if (!idRecompensa) {

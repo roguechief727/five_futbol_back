@@ -19,6 +19,7 @@ const middlewares = require('./api/middlewares/verifyToken'); // Importa los mid
 const PORT = 3001;
 
 app.use(express.json());
+app.use('/api/routes/auth', authRoutes);  
 app.use('/api', jugadorRoutes);
 app.use('/api', partidoRoutes);
 app.use('/api', jugadorrecompensaRoutes);
@@ -32,11 +33,6 @@ app.use('/api', administradorRoutes);
 app.use('/api', calificacionRoutes);
 app.use('/api', notificacionRoutes);
 app.use('/api', userRoutes);
-
-app.use(express.json());
-app.use('/api', middlewares.verifyToken('administrador'), userRoutes); // Usa las rutas de usuario protegidas
-app.use('/api/routes/auth', authRoutes);  
-
 
 app.get('/', (req, res) => {
     res.send('¡Hola desde el backend!');

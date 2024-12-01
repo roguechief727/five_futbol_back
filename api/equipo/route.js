@@ -14,8 +14,8 @@ router.get('/equipo', async (req, res) => {
 });
 
 // POST: Crear un nuevo equipo
-router.post('/equipo', async (req, res) => {
-  try {
+router.post('/equipo', verifyToken('administrador'), async (req, res) => {
+  try { 
     const { idEquipo, nombre, resultado } = req.body;
     if (!idEquipo) {
       return res.status(400).json({ error: 'idEquipo es obligatorio' });
@@ -30,7 +30,7 @@ router.post('/equipo', async (req, res) => {
 });
 
 // DELETE: Eliminar un equipo
-router.delete('/equipo', async (req, res) => {
+router.delete('/equipo', verifyToken('administrador'), async (req, res) => {
   try {
     const { idEquipo } = req.query;
     if (!idEquipo) {

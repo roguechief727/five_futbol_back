@@ -15,8 +15,8 @@ router.post('/register', async (req, res) => {
     }
   
     // Comprobamos si el rol es válido
-    if (role !== 'jugador' && role !== 'administrador') {
-      return res.status(400).json({ message: 'El rol debe ser "jugador" o "administrador"' });
+    if (role !== 'jugador') {
+      return res.status(400).json({ message: 'El rol debe ser "jugador"' });
     }
   
     try {
@@ -43,7 +43,6 @@ router.post('/login', async (req, res) => {
     try {
         // Buscar el usuario en la base de datos
         const query = 'SELECT * FROM users WHERE username = ?';
-        console.log('Debugging endpoint', username);
         const [result] = await connection.query(query, [username]);
 
         // Verificar si el usuario existe
@@ -52,15 +51,20 @@ router.post('/login', async (req, res) => {
         }
 
         const user = result[0];
+
         // Comparar la contraseña cifrada
-        const isPasswordValid = await bcrypt.compare(password, user.password);
-        console.log('Debugging endpoint', password, user.password, isPasswordValid);
-        if (isPasswordValid) {
+        if (password !== user.password) {
             return res.status(401).json({ message: 'Credenciales incorrectas' });
         }
 
+        // Verificar que el id y role existen antes de generar el token
+        if (!user.id || !user.role) {
+            return res.status(500).json({ message: 'Datos de usuario inválidos' });
+        }
+
         // Generar el token JWT con el id del usuario y el rol
-        const token = jwt.sign({ id: user.id, role: user.role }, JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign({ id: user.id, role: user.role }, JWT_SECRET, { expiresIn: '24h' });
+
         // Enviar la respuesta con el token y el rol del usuario
         return res.status(200).json({ token, role: user.role });
     } catch (error) {
@@ -68,8 +72,6 @@ router.post('/login', async (req, res) => {
         res.status(500).json({ message: 'Error al iniciar sesión', error });
     }
 });
-
-  
 
 
 module.exports = router;

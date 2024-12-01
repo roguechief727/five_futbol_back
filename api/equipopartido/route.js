@@ -14,7 +14,7 @@ router.get('/equipopartido', async (req, res) => {
 });
 
 // POST: Crear una nueva relación equipo-partido
-router.post('/equipopartido', async (req, res) => {
+router.post('/equipopartido', verifyToken('administrador'), async (req, res) => {
   try {
     const { idEquipo, idPartido } = req.body;
     if (!idEquipo || !idPartido) {
@@ -30,7 +30,7 @@ router.post('/equipopartido', async (req, res) => {
 });
 
 // DELETE: Eliminar una relación equipo-partido
-router.delete('/equipopartido', async (req, res) => {
+router.delete('/equipopartido', verifyToken('administrador'), async (req, res) => {
   try {
     const { idEquipo, idPartido } = req.query;
     if (!idEquipo || !idPartido) {

@@ -3,7 +3,7 @@ const router = express.Router();
 const { connection } = require('../../libs/mysql');
 
 // GET: Obtener todas las notificaciones
-router.get('/notificacion', async (req, res) => {
+router.get('/notificacion', verifyToken('administrador'), async (req, res) => {
   try {
     const [rows] = await connection.query('SELECT * FROM notificacion');
     res.json(rows);
@@ -14,8 +14,8 @@ router.get('/notificacion', async (req, res) => {
 });
 
 // POST: Crear una nueva notificación
-router.post('/notificacion', async (req, res) => {
-  try {
+router.post('/notificacion', verifyToken('administrador'), async (req, res) => {
+  try { 
     const { idNotificacion, fechaEnvio, mensaje, tipoNotificacion, idJugador } = req.body;
     if (!idNotificacion || !fechaEnvio) {
       return res.status(400).json({ error: 'idNotificacion y fechaEnvio son obligatorios' });
@@ -34,7 +34,7 @@ router.post('/notificacion', async (req, res) => {
 });
 
 // DELETE: Eliminar una notificación
-router.delete('/notificacion', async (req, res) => {
+router.delete('/notificacion', verifyToken('administrador'), async (req, res) => {
   try {
     const { idNotificacion } = req.query;
     if (!idNotificacion) {

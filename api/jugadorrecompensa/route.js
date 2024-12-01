@@ -3,7 +3,7 @@ const router = express.Router();
 const { connection } = require('../../libs/mysql');
 
 // GET: Obtener todas las relaciones jugador-recompensa
-router.get('/jugadorrecompensa', async (req, res) => {
+router.get('/jugadorrecompensa', verifyToken(), async (req, res) => {
   try {
     const [rows] = await connection.query('SELECT * FROM jugadorrecompensa');
     res.json(rows);
@@ -14,7 +14,7 @@ router.get('/jugadorrecompensa', async (req, res) => {
 });
 
 // POST: Crear una nueva relación jugador-recompensa
-router.post('/jugadorrecompensa', async (req, res) => {
+router.post('/jugadorrecompensa', verifyToken('administrador'), async (req, res) => {
   try {
     const { idJugador, idRecompensa } = req.body;
     if (!idJugador || !idRecompensa) {
@@ -30,7 +30,7 @@ router.post('/jugadorrecompensa', async (req, res) => {
 });
 
 // DELETE: Eliminar una relación jugador-recompensa
-router.delete('/jugadorrecompensa', async (req, res) => {
+router.delete('/jugadorrecompensa', verifyToken('administrador'), async (req, res) => {
   try {
     const { idJugador, idRecompensa } = req.query;
     if (!idJugador || !idRecompensa) {

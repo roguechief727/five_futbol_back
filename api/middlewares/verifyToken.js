@@ -4,8 +4,6 @@ const { connection } = require('../../libs/mysql');
 const jwt = require('jsonwebtoken');
 
 const JWT_SECRET = 'supersecretkey'; // Usa una clave secreta más segura en producción
-//const auth = jwt.sign({ id: 1, role: 'administrador' }, JWT_SECRET, { expiresIn: '1h' });
-//console.log('Nuevo token:', auth);
 
 // Middleware para verificar el token y el rol
 const verifyToken = (role) => {
@@ -29,15 +27,5 @@ const verifyToken = (role) => {
       }
     };
   };
-  
-  // Ejemplo de ruta protegida por rol (solo administradores)
-  router.get('/admin', verifyToken('administrador'), (req, res) => {
-    res.json({ message: 'Acceso concedido a administrador', user: req.user });
-  });
-  
-  // Ejemplo de ruta protegida por rol (solo jugadores)
-  router.get('/jugador', verifyToken('jugador'), (req, res) => {
-    res.json({ message: 'Acceso concedido a jugador', user: req.user });
-});
   
 module.exports = { verifyToken };

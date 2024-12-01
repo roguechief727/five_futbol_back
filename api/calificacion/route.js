@@ -3,7 +3,7 @@ const router = express.Router();
 const { connection } = require('../../libs/mysql');
 
 // GET: Obtener todas las calificaciones
-router.get('/calificacion', async (req, res) => {
+router.get('/calificacion', verifyToken(), async (req, res) => {
   try {
     const [rows] = await connection.query('SELECT * FROM calificacion');
     res.json(rows);
@@ -14,7 +14,7 @@ router.get('/calificacion', async (req, res) => {
 });
 
 // POST: Crear una calificación
-router.post('/calificacion', async (req, res) => {
+router.post('/calificacion', verifyToken('jugador'), async (req, res) => {
   try {
     const { idCalificacion, comentario, idJugadorEvaluador, idJugadorEvaluado, puntuacion } = req.body;
     if (!idCalificacion) {
