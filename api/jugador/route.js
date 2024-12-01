@@ -14,29 +14,6 @@ router.get('/jugador', verifyToken(), async (req, res) => {
   }
 });
 
-// POST: Crear un nuevo jugador
-router.post('/jugador', verifyToken('administrador'), async (req, res) => {
-  try {
-    const { idJugador, nombre, email, modo, rendimiento, golesMarcados, fallasCometidas } = req.body;
-
-    if (!idJugador || !nombre) {
-      return res.status(400).json({ error: 'idJugador y nombre son campos obligatorios' });
-    }
-
-    const query = `
-      INSERT INTO jugador (idJugador, nombre, email, modo, rendimiento, golesMarcados, fallasCometidas)
-      VALUES (?, ?, ?, ?, ?, ?, ?)
-    `;
-    const values = [idJugador, nombre, email, modo, rendimiento, golesMarcados, fallasCometidas];
-    const [result] = await connection.query(query, values);
-
-    res.json({ message: 'Jugador creado exitosamente', result });
-  } catch (error) {
-    console.error('Error inserting data:', error);
-    res.status(500).json({ error: 'Error creating player' });
-  }
-});
-
 // GET: Obtener un jugador por ID
 router.get('/jugador/:id', verifyToken(), async (req, res) => {
   try {

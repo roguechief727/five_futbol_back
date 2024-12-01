@@ -8,7 +8,7 @@ const JWT_SECRET = 'supersecretkey'; // Usa una clave secreta más segura en pro
 
 // Registro de usuario
 router.post('/register', async (req, res) => {
-    const { username, password, role, nombre, email } = req.body;
+    const { username, password, role, nombre, email, numeroDocumento } = req.body;
     // Validación básica
     if (!username || !password || !role) {
       return res.status(400).json({ message: 'Todos los campos son obligatorios' });
@@ -21,16 +21,19 @@ router.post('/register', async (req, res) => {
   
     try {
       // Cifrado de la contraseña con bcrypt
-      const hashedPassword = await bcrypt.hash(password, 10);
+      const hashedPassword = password;
   
       // Insertar el nuevo usuario en la base de datos
-      const query = 'INSERT INTO users (username, password, role, nombre, email) VALUES (?, ?, ?, ?, ?)';
-      connection.query(query, [username, hashedPassword, role, nombre, email], (err, results) => {
-        if (err) {
-          return res.status(500).json({ message: 'Error al registrar usuario', error: err });
-        }
-        res.status(201).json({ message: 'Usuario registrado correctamente' });
-      });
+      const query = 'INSERT INTO users (username, password, role, nombre, email, numeroDocumento) VALUES (?, ?, ?, ?, ?, ?)';
+      connection.query(query, [username, hashedPassword, role, nombre, email, numeroDocumento])
+       
+      const query1 = 'Select id from users where username = ?';
+      const [result] = await connection.query(query1, [username]);
+      const query2 = 'INSERT INTO jugador (idJugador ,nombre, email, modo, rendimiento, golesMarcados, fallasCometidas, userId) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+      connection.query(query2, [numeroDocumento ,nombre, email, 'ocasional', 0, 0, 0, result[0].id]);
+
+      res.status(201).json({ message: 'Usuario registrado correctamente' });
+    
     } catch (error) {
       res.status(500).json({ message: 'Error al registrar usuario', error });
     }
