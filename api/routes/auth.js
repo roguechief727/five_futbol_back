@@ -27,12 +27,27 @@ router.post('/register', async (req, res) => {
       const query = 'INSERT INTO users (username, password, role, nombre, email, numeroDocumento) VALUES (?, ?, ?, ?, ?, ?)';
       connection.query(query, [username, hashedPassword, role, nombre, email, numeroDocumento])
        
-      const query1 = 'Select id from users where username = ?';
+      const query1 = 'Select * from users where username = ?';
       const [result] = await connection.query(query1, [username]);
       const query2 = 'INSERT INTO jugador (idJugador ,nombre, email, modo, rendimiento, golesMarcados, fallasCometidas, userId) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
       connection.query(query2, [numeroDocumento ,nombre, email, 'ocasional', 0, 0, 0, result[0].id]);
 
-      res.status(201).json({ message: 'Usuario registrado correctamente' });
+      const user = result[0];
+      
+        if (hashedPassword !== user.password) {
+            return res.status(401).json({ message: 'Credenciales incorrectas' });
+        }
+
+        // Verificar que el id y role existen antes de generar el token
+        if (!user.id || !user.role) {
+            return res.status(500).json({ message: 'Datos de usuario inválidos' });
+        }
+
+        // Generar el token JWT con el id del usuario y el rol
+        const token = jwt.sign({ id: user.id, role: user.role }, JWT_SECRET, { expiresIn: '24h' });
+
+        // Enviar la respuesta con el token y el rol del usuario
+        return res.status(200).json({ token, role: user.role });
     
     } catch (error) {
       res.status(500).json({ message: 'Error al registrar usuario', error });
