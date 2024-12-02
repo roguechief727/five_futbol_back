@@ -4,7 +4,7 @@ const { connection } = require('../../libs/mysql'); // Corrige según la ubicaci
 const { verifyToken } = require('../middlewares/verifyToken');
 
 // GET: Obtener todos los jugadores
-router.get('/jugador', verifyToken(), async (req, res) => {
+router.get('/jugador', async (req, res) => {
   try {
     const [rows] = await connection.query('SELECT * FROM jugador');
     res.json(rows);
