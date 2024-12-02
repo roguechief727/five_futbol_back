@@ -15,7 +15,7 @@ router.get('/jugador', verifyToken(), async (req, res) => {
 });
 
 // GET: Obtener un jugador por ID
-router.get('/jugador/:id', verifyToken(), async (req, res) => {
+router.get('/jugador/:idJugador', verifyToken(), async (req, res) => {
   try {
     const { id } = req.params;
     const [result] = await connection.query('SELECT * FROM jugador WHERE idJugador = ?', [id]);
@@ -27,7 +27,7 @@ router.get('/jugador/:id', verifyToken(), async (req, res) => {
 });
 
 // PUT: Actualizar un jugador
-router.put('/jugador', verifyToken('administrador'), async (req, res) => {
+router.put('/jugador/:idJugador', verifyToken('administrador'), async (req, res) => {
   try {
     const { idJugador, nombre, email, modo, rendimiento, golesMarcados, fallasCometidas } = req.body;
 
@@ -51,9 +51,9 @@ router.put('/jugador', verifyToken('administrador'), async (req, res) => {
 });
 
 // DELETE: Eliminar un jugador por ID
-router.delete('/jugador', verifyToken('administrador'), async (req, res) => {
+router.delete('/jugador/:idJugador', verifyToken('administrador'), async (req, res) => {
   try {
-    const { idJugador } = req.query;
+    const { idJugador } = req.params;
 
     if (!idJugador) {
       return res.status(400).json({ error: 'idJugador es requerido para eliminar un jugador' });
