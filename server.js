@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const cors = require('cors');
 const jugadorRoutes = require('./api/jugador/route');
 const partidoRoutes = require('./api/partido/route');
 const jugadorrecompensaRoutes = require('./api/jugadorrecompensa/route');
@@ -17,6 +18,12 @@ const userRoutes = require('./api/users/route');
 const authRoutes = require('./api/routes/auth'); // Importa las rutas de autenticación
 const middlewares = require('./api/middlewares/verifyToken'); // Importa los middlewares de autenticación
 const PORT = 3001;
+
+app.use(cors({
+    origin: 'http://localhost:3000', // Cambia esto a la URL donde corre tu frontend
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true,
+  }));
 
 app.use(express.json());
 app.use('/api/routes/auth', authRoutes);  
